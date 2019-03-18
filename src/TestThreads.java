@@ -1,4 +1,5 @@
 import deadLock.Business;
+import hiddenDeadLock.Task;
 import liveLock.Criminal;
 import liveLock.Police;
 import starvation.Worker;
@@ -8,13 +9,28 @@ public class TestThreads {
 
     public static void main(String[] args) {
 
-//        Deadlock:  All threads are blocked, the program hangs forever.
-        Business business=new Business();
-        for (int i=0;i<10;i++){
-            new Thread(business::foo,"foo").start();
-            new Thread(business::bar,"bar").start();
+//       Hidden Deadlock:  All threads are blocked, the program hangs forever. No logs in dump
+        Task task = new Task();
+        for (int i = 0; i < 5; i++) {
+            new Thread(() -> {
+                task.executeTask1();
+            }, "pattern 1").start();
+
+            new Thread(() -> {
+                task.executeTask2();
+            }, "pattern 2").start();
         }
 
+
+
+//        Deadlock:  All threads are blocked, the program hangs forever.
+        /**
+         Business business=new Business();
+         for (int i=0;i<10;i++){
+         new Thread(business::foo,"foo").start();
+         new Thread(business::bar,"bar").start();
+         }
+         **/
 
 //         Livelock: No threads blocked but they run into infinite loops. The program is still running but unable to make further progress.
         /**
