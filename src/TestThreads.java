@@ -1,25 +1,44 @@
-import deadLock.Business;
-import hiddenDeadLock.Task;
-import liveLock.Criminal;
-import liveLock.Police;
-import starvation.Worker;
+import raceCondition_ctricalSections.Counter;
 
 public class TestThreads {
 
 
     public static void main(String[] args) {
 
-//       Hidden Deadlock:  All threads are blocked, the program hangs forever. No logs in dump
-        Task task = new Task();
-        for (int i = 0; i < 5; i++) {
+//      For Critical & race Conditions ( critical happen by print stream)
+//      https://stackoverflow.com/questions/9459657/is-multi-thread-output-from-system-out-println-interleaved
+        
+        Counter counter = new Counter();
+        for (int i = 1; i <= 1; i++) {
             new Thread(() -> {
-                task.executeTask1();
-            }, "pattern 1").start();
-
+                counter.add(1);
+            }).start();
             new Thread(() -> {
-                task.executeTask2();
-            }, "pattern 2").start();
+                counter.add(1);
+            }).start();
+            new Thread(() -> {
+                counter.add(1);
+            }).start();
+            new Thread(() -> {
+                counter.add(1);
+            }).start();
         }
+        System.out.println(counter.getCount());
+
+
+//       Hidden Deadlock:  All threads are blocked, the program hangs forever. No logs in dump
+        /**
+         Task task = new Task();
+         for (int i = 0; i < 5; i++) {
+         new Thread(() -> {
+         task.executeTask1();
+         }, "pattern 1").start();
+
+         new Thread(() -> {
+         task.executeTask2();
+         }, "pattern 2").start();
+         }
+         **/
 
 
 
